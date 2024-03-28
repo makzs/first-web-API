@@ -1,3 +1,7 @@
+### Raiz da aplicação
+
+GET http://localhost:5056/
+
 ### Listagem de produtos
 
 GET http://localhost:5056/produto/listar
@@ -5,3 +9,7 @@ GET http://localhost:5056/produto/listar
 ### Cadastro de produtos
 
 POST http://localhost:5056/produto/cadastrar
+
+### Obter cadastro
+
+GET http://localhost:5056/produto/cadastrar/42
