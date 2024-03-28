@@ -38,12 +38,12 @@ app.MapGet("/produto/buscar/{nome}", ([FromRoute] string nome) =>
             if (produtos[i].Nome == nome)
             {
                 // retornar o produto encontrado 
-                return produtos[i];
+                return Results.Ok(produtos[i]);
             }
 
         }
         // caso nao encontre o produto
-        return null;
+        return Results.NotFound("Produto nao encontrado");
     }
 );
 
