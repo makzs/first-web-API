@@ -1,5 +1,6 @@
 
 using API.Models;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -7,11 +8,13 @@ var app = builder.Build();
 // Produto produto = new Produto();
 // produto.Nome = "Bolacha";
 
-List<Produto> produtos = new List<Produto>();
-produtos.Add(new Produto("Arroz", "pacote de arroz 2kg", 20.50));
-produtos.Add(new Produto("feijao", "pacote de feijao 1kg", 13.20));
-produtos.Add(new Produto("Batata", "saco de 1kg de batata", 15.00));
-produtos.Add(new Produto("Frango", "pacote de 500g de frango", 18.85));
+List<Produto> produtos =
+[
+    new Produto("Arroz", "pacote de arroz 2kg", 20.50),
+    new Produto("feijao", "pacote de feijao 1kg", 13.20),
+    new Produto("Batata", "saco de 1kg de batata", 15.00),
+    new Produto("Frango", "pacote de 500g de frango", 18.85),
+];
 
 // novo endpoint para a raiz da aplicação
 // GET: http://localhost:5056
@@ -23,6 +26,27 @@ app.MapGet("/", () => "API de produtos");
 // GET: http://localhost:5056/produto/listar
 app.MapGet("/produto/listar", () =>
     produtos);
+
+// colocar a variavel entre {} para definir que pode ser diferente
+// entre as () se deve colocar os parametros no caso a variavel definida 
+// entre [] se escreve a origem do parametro informado
+// GET: http://localhost:5056/produto/buscar/nomeDoProduto
+app.MapGet("/produto/buscar/{nome}", ([FromRoute] string nome) =>
+    {
+        for (int i = 0; i < produtos.Count; i++)
+        {
+            if (produtos[i].Nome == nome)
+            {
+                // retornar o produto encontrado 
+                return produtos[i];
+            }
+
+        }
+        // caso nao encontre o produto
+        return null;
+    }
+);
+
 
 // nao se pode criar o mesmo metodo e a mesma url se nao ocorre conflito de endpoints
 // app.MapGet("/produto/listar", () => "listagem de produtos");

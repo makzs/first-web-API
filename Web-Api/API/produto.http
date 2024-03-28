@@ -6,6 +6,10 @@ GET http://localhost:5056/
 
 GET http://localhost:5056/produto/listar
 
+### Busca de produtos por nome
+
+GET http://localhost:5056/produto/buscar/Arroz
+
 ### Cadastro de produtos
 
 POST http://localhost:5056/produto/cadastrar
