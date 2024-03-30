@@ -63,5 +63,11 @@ app.MapPost("/produto/cadastrar", () => "Cadastro de produtos");
 // tentar cadastar produtos em uma lista
 app.MapGet("produto/cadastrar/{id}", (int id) => $"Obter item com ID {id}");
 
+app.MapPost("/produto/cadastrar", ([FromBody] Produto novoProduto) =>
+    {
+    produtos.Add(new Produto(novoProduto.Nome, novoProduto.Descricao, novoProduto.Valor));
+    return $"Produto {novoProduto.Nome} adicionado com sucesso!";
+    });
+
 app.Run();
 

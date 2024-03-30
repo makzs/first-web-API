@@ -17,3 +17,14 @@ POST http://localhost:5056/produto/cadastrar
 ### Obter cadastro
 
 GET http://localhost:5056/produto/cadastrar/42
+
+### cadastrar produto
+
+POST http://localhost:5056/produto/cadastrar/
+Content-Type: application/json
+
+{
+    "Nome": "pizza",
+    "Descricao": "Caixa de pizza media",
+    "Valor": 35.60
+}
