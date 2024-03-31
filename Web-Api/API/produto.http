@@ -28,3 +28,15 @@ Content-Type: application/json
     "Descricao": "Caixa de pizza media",
     "Valor": 35.60
 }
+
+
+### alterar produto
+PUT http://localhost:5056/produto/atualizar/Arroz
+Content-Type: application/json
+
+{
+    "nome": "Arroz",
+    "descricao": "Novo pacote de arroz 5kg",
+    "valor": 25.99
+}
+
