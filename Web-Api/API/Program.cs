@@ -75,11 +75,15 @@ app.MapPut("/produto/atualizar/{Nome}", (string nome, [FromBody] Produto produto
 
     Produto produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
 
+    if (produtoExistente is null){
+        return Results.NotFound();
+    }
+
     produtoExistente.Nome = produtoAtualizado.Nome;
     produtoExistente.Descricao = produtoAtualizado.Descricao;
     produtoExistente.Valor = produtoAtualizado.Valor;
 
-    return $"Produto {produtoExistente.Nome} atualizado com sucesso!";
+    return Results.Ok($"Produto {produtoExistente.Nome} alterado com sucesso!");
 });
 
 // deletar produto da lista
