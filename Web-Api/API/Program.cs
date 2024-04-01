@@ -65,13 +65,14 @@ app.MapGet("produto/cadastrar/{id}", (int id) => $"Obter item com ID {id}");
 
 app.MapPost("/produto/cadastrar", ([FromBody] Produto novoProduto) =>
     {
-    produtos.Add(new Produto(novoProduto.Nome, novoProduto.Descricao, novoProduto.Valor));
-    return $"Produto {novoProduto.Nome} adicionado com sucesso!";
+        produtos.Add(new Produto(novoProduto.Nome, novoProduto.Descricao, novoProduto.Valor));
+        return $"Produto {novoProduto.Nome} adicionado com sucesso!";
     });
 
 // alterar produto da lista
-app.MapPut("/produto/atualizar/{id}", (string nome, [FromBody] Produto produtoAtualizado) =>
+app.MapPut("/produto/atualizar/{Nome}", (string nome, [FromBody] Produto produtoAtualizado) =>
 {
+
     Produto produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
 
     produtoExistente.Nome = produtoAtualizado.Nome;
@@ -80,6 +81,18 @@ app.MapPut("/produto/atualizar/{id}", (string nome, [FromBody] Produto produtoAt
 
     return $"Produto {produtoExistente.Nome} atualizado com sucesso!";
 });
+
+// deletar produto da lista
+app.MapDelete("/produto/deletar/{Nome}", (string nome) =>
+{
+
+    Produto produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
+
+    produtos.Remove(produtoExistente);
+
+    return $"Produto {produtoExistente.Nome} deletado com sucesso!";
+});
+
 
 app.Run();
 
