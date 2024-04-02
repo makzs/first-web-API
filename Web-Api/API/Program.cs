@@ -61,8 +61,11 @@ app.MapPost("/produto/cadastrar", () => "Cadastro de produtos");
 
 // exercicio
 // cadastar produtos em uma lista
+
+// pela url
 app.MapGet("produto/cadastrar/{id}", (int id) => $"Obter item com ID {id}");
 
+// pelo corpo json
 app.MapPost("/produto/cadastrar", ([FromBody] Produto novoProduto) =>
     {
         produtos.Add(new Produto(novoProduto.Nome, novoProduto.Descricao, novoProduto.Valor));
@@ -73,9 +76,10 @@ app.MapPost("/produto/cadastrar", ([FromBody] Produto novoProduto) =>
 app.MapPut("/produto/atualizar/{Nome}", (string nome, [FromBody] Produto produtoAtualizado) =>
 {
 
-    Produto produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
+    Produto? produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
 
-    if (produtoExistente is null){
+    if (produtoExistente is null)
+    {
         return Results.NotFound();
     }
 
@@ -90,11 +94,46 @@ app.MapPut("/produto/atualizar/{Nome}", (string nome, [FromBody] Produto produto
 app.MapDelete("/produto/deletar/{Nome}", (string nome) =>
 {
 
-    Produto produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
+    Produto? produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
 
     produtos.Remove(produtoExistente);
 
     return $"Produto {produtoExistente.Nome} deletado com sucesso!";
+});
+
+// alterar parcialmente um produto
+app.MapPatch("/produto/patch/{Nome}/{patch}", (string nome, string patch, [FromBody] Produto produtoAtualizado) =>
+{
+    Produto? produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
+
+    if (produtoExistente is null)
+    {
+        return Results.NotFound("Nome nao encontrado!");
+    }
+
+    else if (patch == "nome")
+    {
+        produtoExistente.Nome = produtoAtualizado.Nome;
+        return Results.Ok($"Nome de produto: {produtoExistente.Nome}. Alterado com sucesso!");
+    }
+
+    else if (patch == "descricao")
+    {
+        produtoExistente.Descricao = produtoAtualizado.Descricao;
+        return Results.Ok($"Descricao: {produtoExistente.Descricao}. Alterado com sucesso!");
+    }
+
+    else if (patch == "valor")
+    {
+        produtoExistente.Valor = produtoAtualizado.Valor;
+        return Results.Ok($"valor: {produtoExistente.Nome}. Alterado com sucesso!");
+    }
+
+    else
+    {
+        return Results.NotFound("Informe o campo que deseja atualizar na url!");
+    }
+
 });
 
 
