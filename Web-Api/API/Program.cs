@@ -104,37 +104,30 @@ app.MapDelete("/produto/deletar/{Nome}", (string nome) =>
 // alterar parcialmente um produto
 app.MapPatch("/produto/patch/{Nome}/{patch}", (string nome, string patch, [FromBody] Produto produtoAtualizado) =>
 {
-    Produto? produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
+
+    Produto produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
 
     if (produtoExistente is null)
     {
-        return Results.NotFound("Nome nao encontrado!");
+        return Results.NotFound("Produto não encontrado.");
     }
 
-    else if (patch == "nome")
+    switch (patch)
     {
-        produtoExistente.Nome = produtoAtualizado.Nome;
-        return Results.Ok($"Nome de produto: {produtoExistente.Nome}. Alterado com sucesso!");
+        case "nome":
+            produtoExistente.Nome = produtoAtualizado.Nome;
+            return Results.Ok($"Nome do produto atualizado para: {produtoExistente.Nome}");
+        case "descricao":
+            produtoExistente.Descricao = produtoAtualizado.Descricao;
+            return Results.Ok($"Descrição do produto atualizada para: {produtoExistente.Descricao}");
+        case "valor":
+            produtoExistente.Valor = produtoAtualizado.Valor;
+            return Results.Ok($"Valor do produto atualizado para: {produtoExistente.Valor}");
+        default:
+            return Results.BadRequest("Campo 'patch' inválido. Escolha entre 'nome', 'descricao' ou 'valor'.");
     }
-
-    else if (patch == "descricao")
-    {
-        produtoExistente.Descricao = produtoAtualizado.Descricao;
-        return Results.Ok($"Descricao: {produtoExistente.Descricao}. Alterado com sucesso!");
-    }
-
-    else if (patch == "valor")
-    {
-        produtoExistente.Valor = produtoAtualizado.Valor;
-        return Results.Ok($"valor: {produtoExistente.Nome}. Alterado com sucesso!");
-    }
-
-    else
-    {
-        return Results.NotFound("Informe o campo que deseja atualizar na url!");
-    }
-
 });
+
 
 
 app.Run();

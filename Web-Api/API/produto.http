@@ -46,9 +46,9 @@ DELETE http://localhost:5056/produto/deletar/Arroz
 
 ### Altera parcialmente o produto
 
-PATCH http://localhost:5056/produto/atualizar/Arroz/descricao
+PATCH http://localhost:5056/produto/patch/feijao/descricao
 Content-Type: application/json
 
 {
-    "descricao": "5kg de arroz",
+    "Descricao": "Saco de feijao 6kg"
 }
