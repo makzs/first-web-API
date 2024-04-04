@@ -63,21 +63,23 @@ app.MapGet("/produto/buscar/{nome}", ([FromRoute] string nome) =>
 // cadastar produtos em uma lista
 
 // pela url
-app.MapGet("produto/cadastrar/{nome}/{descricao}/{valor}", ([FromRoute] string nome, string descricao, double valor) =>
+app.MapGet("produto/cadastrar/{nome}/{descricao}/{valor}", ([FromRoute] string nome, [FromRoute] string descricao, [FromRoute] double valor) =>
     {
 
-        Produto novoProduto = new Produto();
-        novoProduto.Nome = nome;
-        novoProduto.Descricao = descricao;
-        novoProduto.Valor = valor;
+        // preencher o objeto pelo construtor
+        Produto novoProduto = new Produto(nome, descricao, valor);
 
+        // verifica se valores strings nao são nulos
         if (novoProduto.Nome is null || novoProduto.Descricao is null)
         {
-            return Results.NotFound("campos invalidos.");
+            return Results.BadRequest("campos invalidos.");
         }
 
-        produtos.Add(new Produto(novoProduto.Nome,novoProduto.Descricao, novoProduto.Valor));
-        return Results.Ok($"Produto {novoProduto.Nome} adicionado com sucesso!");
+        // adiciona o objeto novoProduto na lista produtos
+        produtos.Add(new Produto(novoProduto.Nome, novoProduto.Descricao, novoProduto.Valor));
+
+        // retorna o codigo hhtp que o metodo realizou as ações com sucesso
+        return Results.Created("Produto adicionado com sucesso! ", novoProduto);
     });
 
 // pelo corpo json
@@ -85,23 +87,34 @@ app.MapPost("/produto/cadastrar", ([FromBody] Produto novoProduto) =>
     {
         if (novoProduto.Nome is null || novoProduto.Descricao is null)
         {
-            return Results.NotFound("campos invalidos.");
+            return Results.BadRequest("campos invalidos.");
         }
 
         produtos.Add(new Produto(novoProduto.Nome, novoProduto.Descricao, novoProduto.Valor));
 
-        return Results.Ok($"Produto {novoProduto.Nome} adicionado com sucesso!");
+        return Results.Created("Produto adicionado com sucesso! ", novoProduto);
     });
 
 // alterar produto da lista
 app.MapPut("/produto/atualizar/{Nome}", ([FromRoute] string nome, [FromBody] Produto produtoAtualizado) =>
 {
 
+    /*
+        for (int i = 0; i < produtos.Count; i++)
+        {
+            if (produtos[i].Nome == nome)
+            {
+                Produto? produtoExistente = produtos[i];
+            }
+
+        }
+    */
+
     Produto? produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
 
     if (produtoExistente is null)
     {
-        return Results.NotFound();
+        return Results.NotFound("Nome requisitado nao encontrado na lista de produtos");
     }
 
     produtoExistente.Nome = produtoAtualizado.Nome;
@@ -119,7 +132,7 @@ app.MapDelete("/produto/deletar/{Nome}", (string nome) =>
 
     if (produtoExistente is null)
     {
-        return Results.NotFound("campos invalidos.");
+        return Results.BadRequest("campos invalidos.");
     }
 
     produtos.Remove(produtoExistente);
@@ -128,14 +141,14 @@ app.MapDelete("/produto/deletar/{Nome}", (string nome) =>
 });
 
 // alterar parcialmente um produto
-app.MapPatch("/produto/patch/{Nome}/{patch}", ( [FromRoute] string nome, string patch, [FromBody] Produto produtoAtualizado) =>
+app.MapPatch("/produto/patch/{Nome}/{patch}", ( [FromRoute] string nome, [FromRoute] string patch, [FromBody] Produto produtoAtualizado) =>
 {
 
     Produto? produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
 
     if (produtoExistente is null)
     {
-        return Results.NotFound("campos invalidos.");
+        return Results.BadRequest("campos invalidos.");
     }
 
     switch (patch)

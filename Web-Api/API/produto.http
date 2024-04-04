@@ -24,9 +24,9 @@ POST http://localhost:5056/produto/cadastrar/
 Content-Type: application/json
 
 {
-    "Nome": "pizza",
-    "Descricao": "Caixa de pizza media",
-    "Valor": 35.60
+    "nome": "pizza",
+    "descricao": "Caixa de pizza media",
+    "valor": 35.60
 }
 
 
@@ -50,5 +50,5 @@ PATCH http://localhost:5056/produto/patch/feijao/descricao
 Content-Type: application/json
 
 {
-    "Descricao": "Saco de feijao 6kg"
+    "descricao": "Saco de feijao 6kg"
 }
