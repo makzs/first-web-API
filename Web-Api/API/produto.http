@@ -14,11 +14,11 @@ GET http://localhost:5056/produto/buscar/Arroz
 
 POST http://localhost:5056/produto/cadastrar
 
-### Obter cadastro
+### Obter cadastro pela url
 
-GET http://localhost:5056/produto/cadastrar/42
+GET http://localhost:5056/produto/cadastrar/Alface/500g/12
 
-### cadastrar produto
+### cadastrar produto pelo corpo
 
 POST http://localhost:5056/produto/cadastrar/
 Content-Type: application/json

@@ -63,14 +63,29 @@ app.MapGet("/produto/buscar/{nome}", ([FromRoute] string nome) =>
 // cadastar produtos em uma lista
 
 // pela url
-app.MapGet("produto/cadastrar/{id}", (int id) => $"Obter item com ID {id}");
+app.MapGet("produto/cadastrar/{nome}/{descricao}/{valor}", ([FromRoute] string nome, string descricao, double valor) =>
+    {
+
+        Produto novoProduto = new Produto();
+        novoProduto.Nome = nome;
+        novoProduto.Descricao = descricao;
+        novoProduto.Valor = valor;
+
+        if (novoProduto.Nome is null || novoProduto.Descricao is null)
+        {
+            return Results.NotFound("campos invalidos.");
+        }
+
+        produtos.Add(new Produto(novoProduto.Nome,novoProduto.Descricao, novoProduto.Valor));
+        return Results.Ok($"Produto {novoProduto.Nome} adicionado com sucesso!");
+    });
 
 // pelo corpo json
 app.MapPost("/produto/cadastrar", ([FromBody] Produto novoProduto) =>
     {
         if (novoProduto.Nome is null || novoProduto.Descricao is null)
         {
-            return Results.NotFound("Produto não encontrado.");
+            return Results.NotFound("campos invalidos.");
         }
 
         produtos.Add(new Produto(novoProduto.Nome, novoProduto.Descricao, novoProduto.Valor));
@@ -79,7 +94,7 @@ app.MapPost("/produto/cadastrar", ([FromBody] Produto novoProduto) =>
     });
 
 // alterar produto da lista
-app.MapPut("/produto/atualizar/{Nome}", (string nome, [FromBody] Produto produtoAtualizado) =>
+app.MapPut("/produto/atualizar/{Nome}", ([FromRoute] string nome, [FromBody] Produto produtoAtualizado) =>
 {
 
     Produto? produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
@@ -104,7 +119,7 @@ app.MapDelete("/produto/deletar/{Nome}", (string nome) =>
 
     if (produtoExistente is null)
     {
-        return Results.NotFound("Produto não encontrado.");
+        return Results.NotFound("campos invalidos.");
     }
 
     produtos.Remove(produtoExistente);
@@ -113,14 +128,14 @@ app.MapDelete("/produto/deletar/{Nome}", (string nome) =>
 });
 
 // alterar parcialmente um produto
-app.MapPatch("/produto/patch/{Nome}/{patch}", (string nome, string patch, [FromBody] Produto produtoAtualizado) =>
+app.MapPatch("/produto/patch/{Nome}/{patch}", ( [FromRoute] string nome, string patch, [FromBody] Produto produtoAtualizado) =>
 {
 
     Produto? produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
 
     if (produtoExistente is null)
     {
-        return Results.NotFound("Produto não encontrado.");
+        return Results.NotFound("campos invalidos.");
     }
 
     switch (patch)
