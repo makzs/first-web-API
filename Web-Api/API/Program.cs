@@ -54,7 +54,7 @@ app.MapGet("/produto/buscar/{nome}", ([FromRoute] string nome) =>
 // metodo post -> cadastro 
 // app.MapPost("/produto/cadastrar", () => "Cadastro de produtos"); -> erro 405. Toda funcao acessada por uma url é pelo metodo get
 // GET: http://localhost:5056/produto/cadastrar
-app.MapPost("/produto/cadastrar", () => "Cadastro de produtos");
+//app.MapPost("/produto/cadastrar", () => "Cadastro de produtos");
 
 // get é para pegar informações
 // post é para enviar informações
@@ -68,8 +68,14 @@ app.MapGet("produto/cadastrar/{id}", (int id) => $"Obter item com ID {id}");
 // pelo corpo json
 app.MapPost("/produto/cadastrar", ([FromBody] Produto novoProduto) =>
     {
+        if (novoProduto.Nome is null || novoProduto.Descricao is null)
+        {
+            return Results.NotFound("Produto não encontrado.");
+        }
+
         produtos.Add(new Produto(novoProduto.Nome, novoProduto.Descricao, novoProduto.Valor));
-        return $"Produto {novoProduto.Nome} adicionado com sucesso!";
+
+        return Results.Ok($"Produto {novoProduto.Nome} adicionado com sucesso!");
     });
 
 // alterar produto da lista
@@ -96,16 +102,21 @@ app.MapDelete("/produto/deletar/{Nome}", (string nome) =>
 
     Produto? produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
 
+    if (produtoExistente is null)
+    {
+        return Results.NotFound("Produto não encontrado.");
+    }
+
     produtos.Remove(produtoExistente);
 
-    return $"Produto {produtoExistente.Nome} deletado com sucesso!";
+    return Results.Ok($"Produto {produtoExistente.Nome} deletado com sucesso!");
 });
 
 // alterar parcialmente um produto
 app.MapPatch("/produto/patch/{Nome}/{patch}", (string nome, string patch, [FromBody] Produto produtoAtualizado) =>
 {
 
-    Produto produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
+    Produto? produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
 
     if (produtoExistente is null)
     {
