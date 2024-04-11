@@ -62,7 +62,7 @@ app.MapGet("/produto/buscar/{nome}", ([FromRoute] string nome) =>
 // exercicio
 // cadastar produtos em uma lista
 
-// pela url
+// get pela url
 app.MapGet("produto/cadastrar/{nome}/{descricao}/{valor}", ([FromRoute] string nome, [FromRoute] string descricao, [FromRoute] double valor) =>
     {
 
@@ -82,7 +82,7 @@ app.MapGet("produto/cadastrar/{nome}/{descricao}/{valor}", ([FromRoute] string n
         return Results.Created("Produto adicionado com sucesso! ", novoProduto);
     });
 
-// pelo corpo json
+// get pelo corpo json
 app.MapPost("/produto/cadastrar", ([FromBody] Produto novoProduto) =>
     {
         if (novoProduto.Nome is null || novoProduto.Descricao is null)
@@ -98,18 +98,7 @@ app.MapPost("/produto/cadastrar", ([FromBody] Produto novoProduto) =>
 // alterar produto da lista
 app.MapPut("/produto/atualizar/{Nome}", ([FromRoute] string nome, [FromBody] Produto produtoAtualizado) =>
 {
-
-    /*
-        for (int i = 0; i < produtos.Count; i++)
-        {
-            if (produtos[i].Nome == nome)
-            {
-                Produto? produtoExistente = produtos[i];
-            }
-
-        }
-    */
-
+    
     Produto? produtoExistente = produtos.FirstOrDefault(p => p.Nome == nome);
 
     if (produtoExistente is null)
